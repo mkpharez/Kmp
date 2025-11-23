@@ -1,0 +1,164 @@
+name: Build Kotlin Multiplatform App
+
+on:
+  push:
+    branches: [ main, copilot/** ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-desktop:
+    name: Build Desktop Application
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup JDK 11
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+          cache: 'gradle'
+      
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      
+      - name: Build shared module
+        run: ./gradlew :shared:desktopJar --no-daemon
+      
+      - name: Build desktop application
+        run: ./gradlew :composeApp:desktopJar --no-daemon
+      
+      - name: Create distribution
+        run: ./gradlew :composeApp:packageDistributionForCurrentOS --no-daemon
+        continue-on-error: true
+      
+      - name: Upload Desktop JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: desktop-jar
+          path: |
+            composeApp/build/libs/*.jar
+            shared/build/libs/*.jar
+          retention-days: 30
+      
+      - name: Upload Desktop Distribution
+        uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: desktop-distribution
+          path: composeApp/build/compose/binaries/main/**/*
+          retention-days: 30
+        continue-on-error: true
+
+  build-web:
+    name: Build Web Application (Wasm)
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup JDK 11
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+          cache: 'gradle'
+      
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      
+      - name: Build Web application
+        run: ./gradlew :composeApp:wasmJsBrowserDistribution --no-daemon
+        continue-on-error: true
+      
+      - name: Upload Web artifacts
+        uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: web-wasm
+          path: composeApp/build/dist/wasmJs/productionExecutable/**/*
+          retention-days: 30
+
+  build-ios:
+    name: Build iOS Frameworks
+    runs-on: macos-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup JDK 11
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+          cache: 'gradle'
+      
+      - name: Setup Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+      
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      
+      - name: Build iOS framework for device (arm64)
+        run: ./gradlew :composeApp:linkReleaseFrameworkIosArm64 --no-daemon
+        continue-on-error: true
+      
+      - name: Build iOS framework for simulator (x64)
+        run: ./gradlew :composeApp:linkReleaseFrameworkIosX64 --no-daemon
+        continue-on-error: true
+      
+      - name: Build iOS framework for simulator (arm64)
+        run: ./gradlew :composeApp:linkReleaseFrameworkIosSimulatorArm64 --no-daemon
+        continue-on-error: true
+      
+      - name: Upload iOS frameworks
+        uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: ios-frameworks
+          path: |
+            composeApp/build/bin/iosArm64/releaseFramework/**/*
+            composeApp/build/bin/iosX64/releaseFramework/**/*
+            composeApp/build/bin/iosSimulatorArm64/releaseFramework/**/*
+            shared/build/bin/iosArm64/releaseFramework/**/*
+            shared/build/bin/iosX64/releaseFramework/**/*
+            shared/build/bin/iosSimulatorArm64/releaseFramework/**/*
+          retention-days: 30
+
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup JDK 11
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+          cache: 'gradle'
+      
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      
+      - name: Run desktop tests
+        run: ./gradlew :shared:desktopTest --no-daemon
+        continue-on-error: true
+      
+      - name: Publish test results
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          files: |
+            **/build/test-results/**/*.xml
+        continue-on-error: true
