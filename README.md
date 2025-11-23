@@ -1,10 +1,14 @@
 # Kotlin Multiplatform (KMP) App with Compose UI
 
+![Build Status](https://github.com/mkpharez/Kmp/workflows/Build%20Kotlin%20Multiplatform%20App/badge.svg)
+
 A Kotlin Multiplatform project using Jetpack Compose UI that runs on multiple platforms:
 - ✅ **Desktop** (Windows, macOS, Linux via JVM)
 - ✅ **Web** (via Kotlin/Wasm)
 - ✅ **iOS** (iOS 14.1+, requires macOS with Xcode to build)
 - ⚠️ **Android** (configured but requires access to Google Maven Repository)
+
+> **Note**: This project requires internet access to Google's Maven repository (`maven.google.com`) to download AndroidX dependencies. See [SETUP_NOTES.md](SETUP_NOTES.md) for details and workarounds if you encounter network restrictions.
 
 ## Project Structure
 

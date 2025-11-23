@@ -3,7 +3,7 @@ enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
     repositories {
-        google()
+        maven("https://maven.google.com")
         gradlePluginPortal()
         mavenCentral()
     }
@@ -19,7 +19,7 @@ pluginManagement {
 
 dependencyResolutionManagement {
     repositories {
-        google()
+        maven("https://maven.google.com")
         mavenCentral()
     }
 }
