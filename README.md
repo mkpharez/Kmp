@@ -47,6 +47,17 @@ Kmp/
 - **Platform Detection**: Automatically detects and displays the running platform
 - **Modular Architecture**: Clean separation between shared logic and platform-specific code
 
+## Quick Start
+
+**Want to get started quickly?** See [QUICKSTART.md](QUICKSTART.md) for a 5-minute guide!
+
+```bash
+# Clone and run
+git clone https://github.com/mkpharez/Kmp.git
+cd Kmp
+./gradlew :composeApp:run
+```
+
 ## Prerequisites
 
 - **JDK 11 or higher** - Required for all platforms
@@ -163,6 +174,13 @@ If you encounter out-of-memory errors, increase the heap size in `gradle.propert
 ```properties
 org.gradle.jvmargs=-Xmx4096M
 ```
+
+## Documentation
+
+- 📖 **[QUICKSTART.md](QUICKSTART.md)** - Get started in 5 minutes
+- 🏗️ **[ARCHITECTURE.md](ARCHITECTURE.md)** - Project structure and design patterns
+- 🎨 **[UI_PREVIEW.md](UI_PREVIEW.md)** - UI design and component details
+- ⚙️ **[SETUP_NOTES.md](SETUP_NOTES.md)** - Network setup and troubleshooting
 
 ## Learn More
 
