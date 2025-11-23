@@ -1,0 +1,55 @@
+# Gradle
+.gradle/
+build/
+gradle-app.setting
+!gradle-wrapper.jar
+!gradle-wrapper.properties
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+# Android Studio
+local.properties
+.DS_Store
+captures/
+.externalNativeBuild
+.cxx
+
+# Kotlin
+*.class
+*.jar
+*.log
+
+# Compose
+composeResources/
+
+# macOS
+.DS_Store
+
+# Build outputs
+*.apk
+*.aab
+*.ipa
+*.dSYM.zip
+*.dSYM
+*.dmg
+*.msi
+*.deb
+*.exe
+
+# Node & Web
+node_modules/
+dist/
+webpack-bundle/
+kotlin-js-store/
+
+# Native
+*.dylib
+*.so
+*.dll
+*.a
+*.o
